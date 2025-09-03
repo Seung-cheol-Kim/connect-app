@@ -1,45 +1,67 @@
-import { Tabs } from 'expo-router';
 import React from 'react';
-import { Platform } from 'react-native';
+import { Tabs } from 'expo-router';
+import { Home, Sparkles, Bot, MessageCircle,Box, Users, User } from 'lucide-react-native';
 
-import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
-
+// 이 파일이 하단 탭 메뉴의 전체적인 디자인과 구성을 결정합니다.
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-          },
-          default: {},
-        }),
+        tabBarActiveTintColor: '#ec4899', // 활성 탭 아이콘 색상
+        headerTitleAlign: 'center',
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: '800',
+        },
+        tabBarStyle: {
+          paddingTop: 4,
+        }
       }}>
       <Tabs.Screen
-        name="index"
+        name="index" // 파일 이름 (index.tsx)
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          title: '홈', // 탭에 표시될 이름
+          tabBarIcon: ({ color }) => <Home color={color} size={24} />,
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="fortune" // 파일 이름 (fortune.tsx)
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: '운세',
+          tabBarIcon: ({ color }) => <Sparkles color={color} size={24} />,
+        }}
+      />
+      <Tabs.Screen
+        name="Chat" // 파일 이름 (Chat.tsx)
+        options={{
+          title: '채팅방',
+          tabBarIcon: ({ color }) => <MessageCircle color={color} size={24} />,
+        }}
+      />
+      {/* === 커뮤니티 탭 추가 === */}
+      <Tabs.Screen
+        name="community" // 파일 이름 (community.tsx)
+        options={{
+          title: '커뮤니티',
+          tabBarIcon: ({ color }) => <Box color={color} size={24} />,
+        }}
+      />
+      {/* ===================== */}
+      <Tabs.Screen
+        name="counseling" // 파일 이름 (consulting.tsx)
+        options={{
+          title: '상담',
+          tabBarIcon: ({ color }) => <Users color={color} size={24} />,
+        }}
+      />
+      <Tabs.Screen
+        name="myPage" // 파일 이름 (myPage.tsx)
+        options={{
+          title: '마이페이지',
+          tabBarIcon: ({ color }) => <User color={color} size={24} />,
         }}
       />
     </Tabs>
   );
 }
+

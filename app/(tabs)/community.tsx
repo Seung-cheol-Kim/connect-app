@@ -1,6 +1,37 @@
 import React from 'react';
 import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity, SafeAreaView, ImageBackground } from 'react-native';
-import { Heart, Star, Award, TrendingUp, Clock, MessageCircle, HeartOff, Sparkles, Undo2, Flower2 } from 'lucide-react-native';
+import { Heart, Star, Award, TrendingUp, Clock, MessageCircle, HeartOff, Sparkles, Undo2, Flower, LucideProps } from 'lucide-react-native';
+
+// === 타입 정의 추가 ===
+// 각 데이터의 형태(타입)를 명확하게 알려줍니다.
+interface Category {
+  name: string;
+  icon: React.FC<LucideProps>; // 아이콘 컴포넌트의 타입
+  color: string;
+}
+
+interface Counselor {
+  id: number;
+  name: string;
+  specialty: string;
+  rating: number;
+  reviews: number;
+  image: string;
+  rank: number;
+}
+
+interface Post {
+  id: number;
+  title: string;
+  content: string;
+  author: string;
+  likes: number;
+  comments: number;
+  time: string;
+  isHot: boolean;
+}
+// =====================
+
 
 // Mock 데이터
 const bannerAd = {
@@ -9,21 +40,21 @@ const bannerAd = {
   subtitle: "무료 연애 상담 + 타로 점보기"
 };
 
-const categories = [
+const categories: Category[] = [ // Category 타입 배열로 지정
   { name: '이별', icon: HeartOff, color: '#60a5fa' },
   { name: '연애', icon: Heart, color: '#f472b6' },
   { name: '썸', icon: Sparkles, color: '#a78bfa' },
   { name: '재회', icon: Undo2, color: '#34d399' },
-  { name: '결혼/부부', icon: Flower2, color: '#fbbf24' },
+  { name: '결혼/부부', icon: Flower, color: '#fbbf24' },
 ];
 
-const topCounselors = [
+const topCounselors: Counselor[] = [ // Counselor 타입 배열로 지정
   { id: 1, name: "김사랑 상담사", specialty: "연애/이별", rating: 4.9, reviews: 1847, image: "https://images.unsplash.com/photo-1620148222862-b95cf7405a7b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb3Vuc2Vsb3IlMjB0aGVyYXBpc3QlMjBwcm9mZXNzaW9uYWx8ZW58MXx8fHwxNzU2OTAyMjM1fDA", rank: 1 },
   { id: 2, name: "박연애 상담사", specialty: "썸/재회", rating: 4.8, reviews: 1623, image: "https://placehold.co/100x100/F9A8D4/4A2324?text=박", rank: 2 },
   { id: 3, name: "이결혼 상담사", specialty: "결혼/부부", rating: 4.9, reviews: 1456, image: "https://placehold.co/100x100/A5B4FC/3730A3?text=이", rank: 3 },
 ];
 
-const hotPosts = [
+const hotPosts: Post[] = [ // Post 타입 배열로 지정
   { id: 1, title: "연애 3년차, 매너리즘 극복했어요!", content: "다들 도움 주셔서 감사해요. 결국 소통이 답이었네요...", author: "행복한연인", likes: 156, comments: 43, time: "2시간 전", isHot: true },
   { id: 2, title: "재회 성공 후기 (1년 만에 다시 만났어요)", content: "정말 많은 분들이 도움 주셨는데, 드디어 재회했어요!", author: "재회성공자", likes: 298, comments: 87, time: "4시간 전", isHot: true },
 ];
