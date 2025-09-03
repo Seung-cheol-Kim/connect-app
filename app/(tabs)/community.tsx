@@ -1,219 +1,163 @@
-import React from 'react';
-import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity, SafeAreaView, ImageBackground } from 'react-native';
-import { Heart, Star, Award, TrendingUp, Clock, MessageCircle, HeartOff, Sparkles, Undo2, Flower, LucideProps } from 'lucide-react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity, FlatList } from 'react-native';
+import { Heart, MessageCircle, Clock } from 'lucide-react-native';
 
-// === 타입 정의 추가 ===
-// 각 데이터의 형태(타입)를 명확하게 알려줍니다.
-interface Category {
-  name: string;
-  icon: React.FC<LucideProps>; // 아이콘 컴포넌트의 타입
-  color: string;
-}
+// Mock 데이터: 실제로는 서버에서 이 데이터를 받아오게 됩니다.
+const categories = ['전체', '이별', '연애', '썸', '재회', '결혼/부부'];
 
-interface Counselor {
-  id: number;
-  name: string;
-  specialty: string;
-  rating: number;
-  reviews: number;
-  image: string;
-  rank: number;
-}
-
-interface Post {
-  id: number;
-  title: string;
-  content: string;
-  author: string;
-  likes: number;
-  comments: number;
-  time: string;
-  isHot: boolean;
-}
-// =====================
-
-
-// Mock 데이터
-const bannerAd = {
-  image: "https://images.unsplash.com/photo-1580115959433-b53b5b6ad9c5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxyb21hbnRpYyUyMGNvdXBsZSUyMGxvdmUlMjBiYW5uZXJ8ZW58MXx8fHwxNzU2OTAyMjMyfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-  title: "💕 새해 연애운 대박 이벤트",
-  subtitle: "무료 연애 상담 + 타로 점보기"
-};
-
-const categories: Category[] = [ // Category 타입 배열로 지정
-  { name: '이별', icon: HeartOff, color: '#60a5fa' },
-  { name: '연애', icon: Heart, color: '#f472b6' },
-  { name: '썸', icon: Sparkles, color: '#a78bfa' },
-  { name: '재회', icon: Undo2, color: '#34d399' },
-  { name: '결혼/부부', icon: Flower, color: '#fbbf24' },
+const posts = [
+  { id: '1', category: '연애', gender: 'female', title: "연애 3년차, 매너리즘 극복했어요!", content: "다들 도움 주셔서 감사해요. 결국 소통이 답이었네요...", author: "행복한연인", likes: 156, comments: 43, time: "2시간 전" },
+  { id: '2', category: '재회', gender: 'male', title: "재회 성공 후기 (1년 만에 다시 만났어요)", content: "정말 많은 분들이 도움 주셨는데, 드디어 재회했어요! 포기하지 마세요 여러분.", author: "재회성공자", likes: 298, comments: 87, time: "4시간 전" },
+  { id: '3', category: '썸', gender: 'female', title: "썸남한테 이렇게 카톡 보냈는데 어떤가요?", content: "제가 너무 급발진 한 걸까요? 답장이 없어서 불안해요 ㅠㅠ 사진 첨부합니다.", author: "콩닥콩닥", likes: 45, comments: 112, time: "5시간 전" },
+  { id: '4', category: '이별', gender: 'male', title: "이별 후유증... 너무 힘드네요.", content: "헤어진 지 한 달 째, 아직도 매일 밤 그 사람 생각이 나요. 어떻게 해야 잊을 수 있을까요?", author: "눈물만주룩", likes: 188, comments: 76, time: "8시간 전" },
+  { id: '5', category: '결혼/부부', gender: 'female', title: "남편이랑 사소한 걸로 자꾸 싸워요.", content: "결혼 선배님들 조언 좀 부탁드립니다. 양말 뒤집어 놓는 거 때문에...", author: "신혼일기", likes: 97, comments: 54, time: "1일 전" },
 ];
 
-const topCounselors: Counselor[] = [ // Counselor 타입 배열로 지정
-  { id: 1, name: "김사랑 상담사", specialty: "연애/이별", rating: 4.9, reviews: 1847, image: "https://images.unsplash.com/photo-1620148222862-b95cf7405a7b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb3Vuc2Vsb3IlMjB0aGVyYXBpc3QlMjBwcm9mZXNzaW9uYWx8ZW58MXx8fHwxNzU2OTAyMjM1fDA", rank: 1 },
-  { id: 2, name: "박연애 상담사", specialty: "썸/재회", rating: 4.8, reviews: 1623, image: "https://placehold.co/100x100/F9A8D4/4A2324?text=박", rank: 2 },
-  { id: 3, name: "이결혼 상담사", specialty: "결혼/부부", rating: 4.9, reviews: 1456, image: "https://placehold.co/100x100/A5B4FC/3730A3?text=이", rank: 3 },
-];
+export default function CommunityScreen() {
+  const [selectedCategory, setSelectedCategory] = useState('전체');
 
-const hotPosts: Post[] = [ // Post 타입 배열로 지정
-  { id: 1, title: "연애 3년차, 매너리즘 극복했어요!", content: "다들 도움 주셔서 감사해요. 결국 소통이 답이었네요...", author: "행복한연인", likes: 156, comments: 43, time: "2시간 전", isHot: true },
-  { id: 2, title: "재회 성공 후기 (1년 만에 다시 만났어요)", content: "정말 많은 분들이 도움 주셨는데, 드디어 재회했어요!", author: "재회성공자", likes: 298, comments: 87, time: "4시간 전", isHot: true },
-];
+  const filteredPosts = selectedCategory === '전체' 
+    ? posts 
+    : posts.filter(post => post.category === selectedCategory);
 
-export default function HomeScreen() {
+  const renderPostItem = ({ item }) => (
+    <TouchableOpacity style={styles.postCard}>
+      <View style={styles.postHeader}>
+        <View style={styles.authorInfo}>
+          <View style={[styles.genderIndicator, { backgroundColor: item.gender === 'male' ? '#bae6fd' : '#fbcfe8' }]} />
+          <Text style={styles.postAuthor}>{item.author}</Text>
+          <Text style={styles.postCategory}>· {item.category}</Text>
+        </View>
+      </View>
+      <Text style={styles.postTitle}>{item.title}</Text>
+      <Text style={styles.postContent} numberOfLines={2}>{item.content}</Text>
+      <View style={styles.postFooter}>
+        <View style={styles.postStats}>
+          <Heart color="#ef4444" size={14} /><Text style={styles.postStatText}>{item.likes}</Text>
+          <MessageCircle color="#6b7280" size={14} /><Text style={styles.postStatText}>{item.comments}</Text>
+        </View>
+        <Text style={styles.postTime}>{item.time}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView style={styles.container}>
-        <View style={styles.content}>
-          {/* Banner Ad */}
-          <TouchableOpacity style={styles.card}>
-            <ImageBackground source={{ uri: bannerAd.image }} style={styles.bannerImage} imageStyle={{ borderRadius: 12 }}>
-              <View style={styles.bannerOverlay} />
-              <View style={styles.bannerTextContainer}>
-                <Text style={styles.bannerTitle}>{bannerAd.title}</Text>
-                <Text style={styles.bannerSubtitle}>{bannerAd.subtitle}</Text>
-              </View>
-            </ImageBackground>
-          </TouchableOpacity>
+      <View>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.categoryContainer}>
+          {categories.map(category => (
+            <TouchableOpacity 
+              key={category} 
+              style={[styles.categoryButton, selectedCategory === category && styles.selectedCategoryButton]}
+              onPress={() => setSelectedCategory(category)}
+            >
+              <Text style={[styles.categoryText, selectedCategory === category && styles.selectedCategoryText]}>{category}</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
 
-          {/* === 카테고리 섹션 (아이콘 스타일로 변경) === */}
-          <View>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.categoryContainer}>
-              {categories.map(category => {
-                const Icon = category.icon;
-                return (
-                  <TouchableOpacity key={category.name} style={styles.categoryItem}>
-                    <View style={[styles.iconContainer, { backgroundColor: category.color }]}>
-                      <Icon color="#fff" size={28} />
-                    </View>
-                    <Text style={styles.categoryText}>{category.name}</Text>
-                  </TouchableOpacity>
-                )
-              })}
-            </ScrollView>
-          </View>
-          {/* === 카테고리 섹션 끝 === */}
-
-          {/* Top Counselors */}
-          <View style={styles.section}>
-            <View style={styles.sectionHeader}>
-              <Award color="#f59e0b" size={20} />
-              <Text style={styles.sectionTitle}>인기 상담사</Text>
-            </View>
-            {topCounselors.map((counselor) => (
-              <View key={counselor.id} style={[styles.card, styles.counselorCard]}>
-                <Image source={{ uri: counselor.image }} style={styles.counselorAvatar} />
-                <View style={styles.rankBadge}>
-                  <Text style={styles.rankText}>{counselor.rank}</Text>
-                </View>
-                <View style={styles.counselorInfo}>
-                  <Text style={styles.counselorName}>{counselor.name}</Text>
-                  <View style={styles.counselorDetails}>
-                    <Star color="#f59e0b" size={14} fill="#f59e0b" />
-                    <Text style={styles.counselorRating}>{counselor.rating}</Text>
-                    <Text style={styles.counselorReviews}>• 후기 {counselor.reviews.toLocaleString()}개</Text>
-                  </View>
-                </View>
-                <TouchableOpacity style={styles.counselButton}>
-                  <Text style={styles.counselButtonText}>상담하기</Text>
-                </TouchableOpacity>
-              </View>
-            ))}
-          </View>
-
-          {/* Hot Community Posts */}
-          <View style={styles.section}>
-            <View style={styles.sectionHeader}>
-              <TrendingUp color="#f97316" size={20} />
-              <Text style={styles.sectionTitle}>인기 커뮤니티</Text>
-            </View>
-            {hotPosts.map((post) => (
-              <TouchableOpacity key={post.id} style={[styles.card, styles.postCard]}>
-                <View style={styles.postHeader}>
-                  <Text style={styles.postTitle} numberOfLines={1}>{post.title}</Text>
-                  {post.isHot && <View style={styles.hotBadge}><Text style={styles.hotBadgeText}>HOT</Text></View>}
-                </View>
-                <Text style={styles.postContent} numberOfLines={2}>{post.content}</Text>
-                <View style={styles.postFooter}>
-                  <Text style={styles.postAuthor}>{post.author}</Text>
-                  <View style={styles.postStats}>
-                    <Heart color="gray" size={12} /><Text style={styles.postStatText}>{post.likes}</Text>
-                    <MessageCircle color="gray" size={12} /><Text style={styles.postStatText}>{post.comments}</Text>
-                    <Clock color="gray" size={12} /><Text style={styles.postStatText}>{post.time}</Text>
-                  </View>
-                </View>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
-      </ScrollView>
+      <FlatList
+        data={filteredPosts}
+        renderItem={renderPostItem}
+        keyExtractor={item => item.id}
+        contentContainerStyle={styles.listContainer}
+      />
     </SafeAreaView>
   );
 }
 
-// 스타일 시트
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: '#f9fafb' },
-  container: { flex: 1 },
-  content: { paddingVertical: 16 },
-  card: { backgroundColor: '#fff', borderRadius: 12, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 4, elevation: 3, marginHorizontal: 16, marginBottom: 16 },
-  bannerImage: { width: '100%', height: 128, justifyContent: 'center', alignItems: 'center' },
-  bannerOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.3)', borderRadius: 12 },
-  bannerTextContainer: { ...StyleSheet.absoluteFillObject, alignItems: 'center', justifyContent: 'center' },
-  bannerTitle: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
-  bannerSubtitle: { color: '#fff', fontSize: 14, marginTop: 4 },
-  section: { marginBottom: 16, paddingHorizontal: 16 },
-  sectionHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 12 },
-  sectionTitle: { fontSize: 18, fontWeight: 'bold', marginLeft: 8, color: '#1f2937' },
-  // Category Styles
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#f9fafb',
+  },
   categoryContainer: {
     paddingHorizontal: 16,
     paddingVertical: 12,
-    alignItems: 'center',
   },
-  categoryItem: {
-    alignItems: 'center',
-    marginRight: 24,
+  categoryButton: {
+    backgroundColor: '#e5e7eb',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    marginRight: 8,
   },
-  iconContainer: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 4,
+  selectedCategoryButton: {
+    backgroundColor: '#ec4899',
   },
   categoryText: {
-    color: '#374151',
-    fontWeight: '500',
-    fontSize: 12,
+    color: '#4b5563',
+    fontWeight: '600',
   },
-  // Counselor Styles
-  counselorCard: { flexDirection: 'row', alignItems: 'center', padding: 12, marginHorizontal: 0 },
-  counselorAvatar: { width: 50, height: 50, borderRadius: 25 },
-  rankBadge: { position: 'absolute', top: 8, left: 50, width: 18, height: 18, borderRadius: 9, backgroundColor: '#f59e0b', justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: '#fff' },
-  rankText: { color: '#fff', fontSize: 10, fontWeight: 'bold' },
-  counselorInfo: { flex: 1, marginLeft: 12 },
-  counselorName: { fontSize: 16, fontWeight: 'bold', color: '#111827' },
-  counselorDetails: { flexDirection: 'row', alignItems: 'center', marginTop: 4 },
-  counselorRating: { marginLeft: 4, color: '#4b5563', fontSize: 12 },
-  counselorReviews: { marginLeft: 8, color: '#4b5563', fontSize: 12 },
-  counselButton: { paddingHorizontal: 12, paddingVertical: 6, borderWidth: 1, borderColor: '#d1d5db', borderRadius: 16 },
-  counselButtonText: { color: '#374151', fontWeight: '600', fontSize: 12 },
-  // Post Styles
-  postCard: { padding: 12, backgroundColor: '#fff', borderRadius: 12, borderWidth: 1, borderColor: '#f3f4f6', marginHorizontal: 0 },
-  postHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
-  postTitle: { fontSize: 16, fontWeight: 'bold', flex: 1, marginRight: 8, color: '#1f2937' },
-  hotBadge: { backgroundColor: '#fee2e2', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 8 },
-  hotBadgeText: { color: '#b91c1c', fontSize: 10, fontWeight: 'bold' },
-  postContent: { color: '#4b5563', marginBottom: 12, fontSize: 14 },
-  postFooter: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  postAuthor: { color: '#6b7280', fontSize: 12 },
-  postStats: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  postStatText: { marginLeft: 2, color: '#6b7280', fontSize: 12 },
+  selectedCategoryText: {
+    color: '#fff',
+  },
+  listContainer: {
+    paddingHorizontal: 16,
+  },
+  postCard: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#f3f4f6',
+  },
+  postHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  authorInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  genderIndicator: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginRight: 6,
+  },
+  postAuthor: {
+    fontWeight: 'bold',
+    color: '#111827',
+  },
+  postCategory: {
+    fontSize: 12,
+    color: '#6b7280',
+    marginLeft: 4,
+  },
+  postTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 4,
+    color: '#1f2937',
+  },
+  postContent: {
+    fontSize: 14,
+    color: '#4b5563',
+    marginBottom: 12,
+  },
+  postFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  postStats: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  postStatText: {
+    marginLeft: 4,
+    fontSize: 12,
+    color: '#6b7280',
+  },
+  postTime: {
+    fontSize: 12,
+    color: '#9ca3af',
+  },
 });
 
