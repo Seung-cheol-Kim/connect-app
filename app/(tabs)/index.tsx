@@ -137,7 +137,6 @@ export default function HomeScreen() {
                     <Text style={styles.counselorReviews}>• 후기 {counselor.reviews.toLocaleString()}개</Text>
                   </View>
                 </View>
-                {/* '상담하기' 버튼의 onPress 기능을 제거합니다. */}
                 <TouchableOpacity style={styles.counselButton}>
                   <Text style={styles.counselButtonText}>상담하기</Text>
                 </TouchableOpacity>
