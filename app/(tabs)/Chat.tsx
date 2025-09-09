@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
-export default function CounselingScreen() {
+export default function ChatScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>채팅방</Text>

@@ -1,12 +1,11 @@
-import { useRouter } from 'expo-router'; // 화면 이동을 위한 useRouter hook 추가
+import { useRouter } from 'expo-router';
 import { Award, Clock, Eye, Flower2, Heart, HeartOff, LucideProps, MessageCircle, Play, Sparkles, Star, TrendingUp, Undo2 } from 'lucide-react-native';
 import React from 'react';
 import { Image, ImageBackground, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 // --- 타입 정의 ---
-// 타입스크립트 오류를 방지하기 위해 각 데이터의 형태를 명확히 정의합니다.
 interface Category {
-  id: string; // 이동할 경로를 위해 id 추가
+  id: string;
   name: string;
   icon: React.FC<LucideProps>;
   color: string;
@@ -78,7 +77,7 @@ const hotPosts: Post[] = [
 // --- Mock 데이터 끝 ---
 
 export default function HomeScreen() {
-  const router = useRouter(); // router 객체 생성
+  const router = useRouter(); 
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -96,22 +95,20 @@ export default function HomeScreen() {
           </TouchableOpacity>
 
           {/* 카테고리 섹션 */}
-          <View>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.categoryContainer}>
-              {categories.map(category => {
-                const Icon = category.icon;
-                return (
-                  <TouchableOpacity key={category.name} style={styles.categoryItem} onPress={() => router.push(`/(tabs)/${category.id}`)}>
-                    <View style={[styles.iconContainer, { backgroundColor: category.color }]}>
-                      <Icon color="#fff" size={28} />
-                    </View>
-                    <Text style={styles.categoryText}>{category.name}</Text>
-                  </TouchableOpacity>
-                )
-              })}
-            </ScrollView>
+          <View style={styles.categoryContainer}>
+            {categories.map(category => {
+              const Icon = category.icon;
+              return (
+                <TouchableOpacity key={category.name} style={styles.categoryItem} onPress={() => router.push('/(tabs)/community')}>
+                  <View style={[styles.iconContainer, { backgroundColor: category.color }]}>
+                    <Icon color="#fff" size={23} />
+                  </View>
+                  <Text style={styles.categoryText}>{category.name}</Text>
+                </TouchableOpacity>
+              )
+            })}
           </View>
-          <br />
+
           {/* 인기 상담사 */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
@@ -119,7 +116,7 @@ export default function HomeScreen() {
                  <Award color="#f59e0b" size={20} />
                  <Text style={styles.sectionTitle}>인기 상담사</Text>
               </View>
-              <TouchableOpacity onPress={() => router.push('/(tabs)/counseling')}>
+              <TouchableOpacity>
                  <Text style={styles.seeMoreText}>더보기</Text>
               </TouchableOpacity>
             </View>
@@ -227,7 +224,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row', 
     alignItems: 'center', 
     marginBottom: 12,
-    justifyContent: 'space-between' // 제목과 '더보기' 버튼을 양 끝으로
+    justifyContent: 'space-between'
   },
   sectionTitleContainer: {
     flexDirection: 'row',
@@ -239,9 +236,18 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   // Category Styles
-  categoryContainer: { paddingHorizontal: 16, paddingVertical: 12, alignItems: 'center' },
-  categoryItem: { alignItems: 'center', marginRight: 24 },
-  iconContainer: { width: 60, height: 60, borderRadius: 30, justifyContent: 'center', alignItems: 'center', marginBottom: 8, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 3, elevation: 4 },
+  categoryContainer: {
+    flexDirection: 'row', // 아이콘들을 가로로 배열
+    justifyContent: 'space-between', // 아이콘들 사이에 균등한 간격
+    paddingHorizontal: 20, // 좌우 여백
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  categoryItem: {
+    alignItems: 'center',
+    // marginRight 제거
+  },
+  iconContainer: { width: 50, height: 50, borderRadius: 25, justifyContent: 'center', alignItems: 'center', marginBottom: 8, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 3, elevation: 4 },
   categoryText: { color: '#374151', fontWeight: '500', fontSize: 12 },
   // Counselor Styles
   counselorCard: { flexDirection: 'row', alignItems: 'center', padding: 12, marginHorizontal: 0 },
