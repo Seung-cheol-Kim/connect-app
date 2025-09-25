@@ -19,11 +19,13 @@
     -   `react-native-svg`를 사용한 커스텀 SVG 로고 컴포넌트 (`components/Logo.tsx`)
     -   모든 탭 화면에 공통 로고 및 메뉴 버튼 적용
 
--   **주요 화면 UI**
-    -   **홈 화면 (`index.tsx`)**: 배너, 아이콘 카테고리, 인기 상담사/콘텐츠/커뮤니티 목록 UI
+-    **주요 화면 UI**
+    -   **홈 화면 (`index.tsx`)**: 배너, 아이콘 카테고리, 인기 콘텐츠/커뮤니티 목록 UI
     -   **커뮤니티 화면 (`community.tsx`)**: 카테고리 필터링, 게시글 목록, 글쓰기(FAB) 버튼 UI
-    -   **운세/타로 화면 (`fortune.tsx`)**: `ImageBackground`를 활용한 카드 형태의 메뉴 UI
     -   **글쓰기 화면 (`writePost.tsx`)**: Modal 형태로 나타나는 게시글 작성 UI
+    -   **운세/타로 선택 화면 (`fortune.tsx`)**: `ImageBackground`를 활용한 카드 메뉴 UI
+    -   **연애 타로 상세 화면 (`tarotDetail.tsx`)**: 30장의 카드를 3x10 그리드로 배열, 순차적인 딜링(Dealing) 애니메이션, 카드 선택 시 결과 모달(Modal) 표시 기능
+
 
 ## 기술 스택 (Tech Stack)
 
@@ -59,6 +61,7 @@ npx expo start
 ## 🗺️ 앞으로의 개발 로드맵 (Roadmap)
 
 -   [ ] **1단계: 나머지 화면 UI 완성**
+    -   [ ] 오늘의 연애운, 재회운, 결혼운 상세 화면 UI 구현
     -   [ ] 채팅방 목록 화면 UI 구현
     -   [ ] 마이페이지 UI 구현
     -   [ ] 게시글 상세 보기 화면 구현
